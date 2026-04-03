@@ -1,0 +1,86 @@
+## 🧠 PRODUCT CONTEXT — ZENSURE
+
+Zensure is an AI-powered income protection system designed for gig workers (delivery riders on platforms like Zepto, Blinkit, Instamart).
+
+These workers face unpredictable income due to external conditions such as rain, heatwaves, pollution, and platform outages.
+
+Zensure solves this by automatically detecting adverse conditions and compensating workers for income loss — without requiring manual claims.
+
+---
+
+## 🎯 CORE OBJECTIVE
+
+Build a system that:
+
+1. Continuously monitors:
+
+   * Environmental conditions (weather, AQI)
+   * User activity (location, movement, working hours)
+
+2. Uses AI to:
+
+   * Predict expected income under normal conditions
+   * Assess user risk profile
+   * Detect fraudulent or abnormal behavior
+
+3. Automatically:
+
+   * Detects when income is impacted
+   * Validates if the user was genuinely working
+   * Calculates financial loss
+   * Processes payout instantly
+
+---
+
+## 🔄 HOW THE SYSTEM WORKS (SIMPLIFIED FLOW)
+
+1. User registers and provides work profile
+2. AI calculates risk score → determines premium
+3. User subscribes to weekly protection plan
+4. App tracks user activity (time + movement)
+5. System fetches real-world data (weather, AQI)
+6. AI predicts expected income
+7. System estimates actual income from activity
+8. If income drop is significant AND conditions are adverse:
+
+   * Fraud check runs
+   * Work intent is validated
+9. If valid → payout is triggered automatically
+
+---
+
+## ⚠️ IMPORTANT DESIGN PRINCIPLES
+
+* No manual claims → fully automated system
+* AI is used for prediction, not final decisions
+* Financial decisions must follow strict rule-based logic
+* System must prevent misuse and fraud
+* All outputs must be explainable and transparent
+
+---
+
+## 👤 TARGET USER
+
+* Delivery rider
+* Works 6–10 hours/day
+* Earns ₹500–₹900/day
+* Highly dependent on external conditions
+
+---
+
+## 💡 WHAT MAKES THIS SYSTEM UNIQUE
+
+* Combines AI + parametric triggers + behavioral validation
+* Uses real-world data (weather + AQI + movement)
+* Fully automated payouts (no claim filing)
+* Designed specifically for gig economy workers
+
+---
+
+## 🎯 FINAL EXPECTATION
+
+The system should feel like:
+
+"A smart financial safety layer that runs in the background and automatically protects a worker’s income."
+
+Not just a dashboard — but a **decision-making system**.

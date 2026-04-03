@@ -1,0 +1,414 @@
+Build a full-stack web application called **Zensure**.
+
+## 🎯 CORE IDEA
+
+An AI-powered income protection system for gig workers where:
+
+* AI predicts risk, income, and anomalies
+* System automatically triggers payouts based on conditions
+
+---
+
+# 🧱 TECH STACK (MANDATORY)
+
+Frontend:
+
+* Next.js (React)
+* Tailwind CSS
+
+Backend:
+
+* Node.js (API routes in Next.js OR Express)
+
+Database:
+
+* Supabase (PostgreSQL)
+
+AI Services:
+
+* Python (FastAPI microservices)
+
+External APIs:
+
+* Weather API (OpenWeatherMap)
+* AQI API (WAQI)
+* Location API (browser geolocation)
+* Payment API (Razorpay)
+
+---
+
+# 🧩 SYSTEM ARCHITECTURE
+
+Frontend (Next.js)
+↓
+Backend API (Node.js / Next API routes)
+↓
+Supabase DB
+↓
+AI Microservices (Python FastAPI)
+↓
+External APIs
+
+---
+
+# 🧑‍💻 USER FLOW (END-TO-END)
+
+1. User registers
+2. AI calculates risk score
+3. Premium + coverage shown
+4. User subscribes
+5. App tracks activity (location + time)
+6. System fetches weather + AQI
+7. AI predicts expected income
+8. System compares actual vs predicted
+9. Fraud AI validates behavior
+10. Payout triggered automatically
+
+---
+
+# 🗄 DATABASE DESIGN (SUPABASE TABLES)
+
+## users
+
+* id (uuid)
+* name
+* city
+* avg_income
+* working_hours
+* created_at
+
+---
+
+## policies
+
+* id
+* user_id
+* premium
+* coverage
+* deductible
+* payout_cap
+* created_at
+
+---
+
+## activities
+
+* id
+* user_id
+* active_hours
+* distance
+* location_points (json)
+* created_at
+
+---
+
+## triggers
+
+* id
+* city
+* weather_data (json)
+* aqi
+* trigger_type
+* created_at
+
+---
+
+## payouts
+
+* id
+* user_id
+* expected_income
+* actual_income
+* loss
+* payout
+* status
+* created_at
+
+---
+
+# 🤖 AI MICRO-SERVICES (MANDATORY)
+
+Create Python FastAPI services:
+
+---
+
+## 1. Risk Prediction Service
+
+Endpoint:
+/risk/predict
+
+Input:
+{
+city,
+avg_income,
+working_hours,
+weather_variability
+}
+
+Output:
+{
+risk_score (0–1)
+}
+
+Model:
+
+* RandomForestRegressor
+* Train on synthetic dataset
+
+---
+
+## 2. Income Prediction Service
+
+Endpoint:
+/income/predict
+
+Input:
+{
+past_income: [7-day array],
+weather,
+working_hours
+}
+
+Output:
+{
+expected_income
+}
+
+---
+
+## 3. Fraud Detection Service
+
+Endpoint:
+/fraud/check
+
+Input:
+{
+active_hours,
+distance,
+location_variance,
+income_pattern
+}
+
+Output:
+{
+fraud_score,
+is_fraud
+}
+
+Model:
+
+* IsolationForest
+
+---
+
+# 🌐 EXTERNAL API INTEGRATION
+
+## Weather API (OpenWeatherMap)
+
+Fetch:
+
+* rainfall
+* temperature
+
+---
+
+## AQI API (WAQI)
+
+Fetch AQI by city
+
+---
+
+## Location API
+
+Use browser:
+navigator.geolocation
+
+Track:
+
+* distance
+* movement
+
+---
+
+## Payment API (Razorpay)
+
+* Subscription payment
+* Mock payout system
+
+---
+
+# ⚙️ CORE DECISION ENGINE (CRITICAL)
+
+DO NOT rely only on AI.
+
+---
+
+## Step 1: Trigger Detection
+
+Trigger = TRUE if:
+
+* rainfall > 70 OR
+* temperature > 42 OR
+* AQI > 400
+
+---
+
+## Step 2: AI Expected Income
+
+expected_income = call AI income service
+
+---
+
+## Step 3: Activity-Based Actual Income Estimate
+
+actual_income = function(active_hours, distance)
+
+---
+
+## Step 4: Activity Drop
+
+activity_drop =
+(expected_income - actual_income) / expected_income
+
+---
+
+## Step 5: Work Intent Check
+
+intent_score =
+(active_hours * 0.5) + (distance * 0.3)
+
+Reject if:
+intent_score < threshold
+
+---
+
+## Step 6: Fraud Check
+
+Call fraud API
+
+Reject if:
+fraud_score > 0.7
+
+---
+
+## Step 7: Payout Calculation
+
+loss = expected_income - actual_income
+
+IF loss <= 0 → payout = 0
+
+IF loss < deductible → payout = 0
+
+ELSE:
+payout = min(loss - deductible, payout_cap)
+
+---
+
+# 📱 FRONTEND PAGES
+
+## Landing Page
+
+* Hero section
+* CTA
+
+---
+
+## Onboarding
+
+* User inputs
+
+---
+
+## Risk Page
+
+* AI risk score
+* Premium
+
+---
+
+## Dashboard
+
+* Policy
+* Activity
+* Alerts
+
+---
+
+## Activity Tracker
+
+* Live tracking
+* Timer
+* Distance
+
+---
+
+## Payout Page
+
+* Trigger
+* Loss
+* Final payout
+
+---
+
+# 🔄 REAL-TIME FEATURES
+
+* Poll trigger API every 10 min
+* Update activity every 1 min
+* Store all data in Supabase
+
+---
+
+# 🧪 SIMULATION MODE
+
+Create:
+/simulate/day
+
+Generate:
+
+* random weather
+* random AQI
+* random activity
+* random income
+
+---
+
+# 🔐 SECURITY + SCALING
+
+* Use Supabase Auth
+* Use Row Level Security (RLS)
+* Use API keys securely
+
+---
+
+# 🎯 FINAL OUTPUT REQUIREMENT
+
+* Fully working frontend + backend
+* Supabase connected
+* AI services integrated
+* API integrations working
+* Clean UI
+* Ready to deploy
+
+---
+
+# 🚫 DO NOT DO
+
+* No fake AI (must use real models)
+* No overengineering
+* No skipping fraud or payout logic
+
+---
+
+# 💡 IMPORTANT
+
+AI is used for:
+
+* Risk prediction
+* Income prediction
+* Fraud detection
+
+Final decisions must be rule-based.
+
+---
+
+Build the system step-by-step with working code.
