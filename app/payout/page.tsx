@@ -37,121 +37,142 @@ export default function PayoutPage() {
     setResult(null);
     const res = await fetch("/api/payout", { method: "POST" });
     if (res.status === 401) { router.push("/login"); return; }
-    const data = await res.json();
-    setResult(data);
+    setResult(await res.json());
     setLoading(false);
   }
 
   if (checking) return (
-    <div className="min-h-screen bg-[#050A14] flex items-center justify-center">
-      <div className="text-gray-500 text-sm">Loading...</div>
+    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+      <div className="text-[#3E3A36] text-sm" style={{fontFamily:"system-ui,sans-serif"}}>Loading…</div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#050A14] text-white">
-      <nav className="flex items-center justify-between px-6 py-4 border-b border-[#0D2040]">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-xs">Z</div>
-          <span className="font-bold">Zensure</span>
+    <div className="min-h-screen bg-[#0A0A0A] text-[#F0ECE4]">
+      <nav className="flex items-center justify-between px-6 py-4 border-b border-[#1F1F1F]">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <div className="w-6 h-6 border border-[#C9A84C] flex items-center justify-center">
+            <span className="text-[#C9A84C] font-serif text-xs">Z</span>
+          </div>
+          <span className="font-serif text-sm tracking-wide">Zensure</span>
         </Link>
-        <Link href="/dashboard" className="text-xs text-gray-400 hover:text-white">← Dashboard</Link>
+        <Link href="/dashboard" className="text-xs text-[#7A7268] hover:text-[#F0ECE4] transition-colors" style={{fontFamily:"system-ui,sans-serif"}}>← Dashboard</Link>
       </nav>
 
-      <div className="max-w-2xl mx-auto px-6 py-12">
-        <h1 className="text-2xl font-bold mb-2">Payout Check</h1>
-        <p className="text-gray-500 text-sm mb-8">Our decision engine evaluates today&apos;s conditions and your activity to determine payout eligibility.</p>
+      <div className="max-w-xl mx-auto px-6 py-14">
+        <div className="text-[#C9A84C] text-xs tracking-widest uppercase mb-1" style={{fontFamily:"system-ui,sans-serif"}}>Decision engine</div>
+        <h1 className="font-serif text-3xl mb-2">Payout analysis</h1>
+        <p className="text-[#7A7268] text-xs leading-relaxed mb-10" style={{fontFamily:"system-ui,sans-serif"}}>
+          The system cross-checks today&apos;s weather, AQI, your tracked activity, and fraud indicators
+          before applying the payout formula.
+        </p>
 
         {!result && (
-          <div className="bg-[#080F1E] border border-[#0D2040] rounded-2xl p-8 text-center mb-6">
-            <div className="text-4xl mb-4">🔍</div>
-            <h2 className="font-semibold mb-2">Run Payout Analysis</h2>
-            <p className="text-gray-500 text-sm mb-6">The system checks weather, AQI, your activity, fraud indicators, and applies the payout formula.</p>
-            <button
-              onClick={checkPayout} disabled={loading}
-              className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 px-8 py-3 rounded-xl font-semibold transition-all"
-            >
-              {loading ? "Analyzing..." : "Check Payout Eligibility"}
+          <div className="border border-[#1F1F1F] p-10 text-center">
+            <div className="font-serif text-5xl text-[#1F1F1F] mb-6">⊙</div>
+            <p className="text-[#7A7268] text-xs mb-8 leading-relaxed" style={{fontFamily:"system-ui,sans-serif"}}>
+              This runs a full 7-step check: trigger detection → income prediction → activity estimate →
+              intent validation → fraud check → deductible → payout cap.
+            </p>
+            <button onClick={checkPayout} disabled={loading}
+              className="bg-[#7B1A2A] hover:bg-[#8F2035] disabled:opacity-40 text-[#F0ECE4] px-10 py-3.5 text-sm font-medium transition-colors inline-flex items-center gap-2"
+              style={{fontFamily:"system-ui,sans-serif"}}>
+              {loading ? "Analyzing…" : <>Run analysis <span className="text-[#C9A84C]">→</span></>}
             </button>
           </div>
         )}
 
         {result && (
-          <div className="space-y-4">
-            {!result.eligible ? (
-              <div className="bg-[#080F1E] border border-[#0D2040] rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-xl">☁️</div>
-                  <div>
-                    <div className="font-semibold">No Payout Triggered</div>
-                    <div className="text-xs text-gray-500 mt-0.5">{result.reason}</div>
-                  </div>
+          <div className="space-y-5">
+
+            {/* Conditions block */}
+            {result.weather && (
+              <div className="border border-[#1F1F1F]">
+                <div className="px-5 py-3 border-b border-[#1F1F1F]">
+                  <span className="text-xs text-[#7A7268] tracking-widest uppercase" style={{fontFamily:"system-ui,sans-serif"}}>Today&apos;s conditions</span>
                 </div>
-                {result.weather && (
-                  <div className="grid grid-cols-3 gap-3 bg-[#0D1526] rounded-xl p-4 text-xs">
-                    <div><div className="text-gray-500">Rainfall</div><div className="font-medium mt-0.5">{result.weather.rainfall}mm</div></div>
-                    <div><div className="text-gray-500">Temp</div><div className="font-medium mt-0.5">{result.weather.temperature}°C</div></div>
-                    <div><div className="text-gray-500">AQI</div><div className="font-medium mt-0.5">{result.aqi}</div></div>
-                  </div>
-                )}
+                <div className="grid grid-cols-3 gap-px bg-[#1F1F1F]">
+                  {[
+                    { label: "Rainfall", value: `${result.weather.rainfall}mm`, warn: (result.weather.rainfall ?? 0) > 70 },
+                    { label: "Temperature", value: `${result.weather.temperature}°C`, warn: (result.weather.temperature ?? 0) > 42 },
+                    { label: "AQI", value: `${result.aqi}`, warn: (result.aqi ?? 0) > 400 },
+                  ].map(c => (
+                    <div key={c.label} className="bg-[#0A0A0A] px-5 py-4">
+                      <div className="text-xs text-[#7A7268] mb-1" style={{fontFamily:"system-ui,sans-serif"}}>{c.label}</div>
+                      <div className={`font-serif text-xl ${c.warn ? "text-[#C87070]" : ""}`}>{c.value}</div>
+                      {c.warn && <div className="text-xs text-[#7B1A2A] mt-0.5" style={{fontFamily:"system-ui,sans-serif"}}>Trigger threshold exceeded</div>}
+                    </div>
+                  ))}
+                </div>
               </div>
-            ) : (
+            )}
+
+            {/* Not eligible */}
+            {!result.eligible && (
+              <div className="border border-[#1F1F1F] px-6 py-6">
+                <div className="text-[#7A7268] text-xs tracking-widest uppercase mb-3" style={{fontFamily:"system-ui,sans-serif"}}>Result</div>
+                <div className="font-serif text-xl mb-2">No payout triggered</div>
+                <div className="text-[#7A7268] text-xs" style={{fontFamily:"system-ui,sans-serif"}}>{result.reason}</div>
+              </div>
+            )}
+
+            {/* Eligible */}
+            {result.eligible && (
               <>
-                {result.trigger?.reasons && (
-                  <div className="bg-orange-900/20 border border-orange-700/40 rounded-xl p-4">
-                    <div className="text-xs font-medium text-orange-300 mb-1">Trigger Conditions Met</div>
+                {result.trigger?.reasons && result.trigger.reasons.length > 0 && (
+                  <div className="border border-[#3D1820] bg-[#1F0C10] px-5 py-4">
+                    <div className="text-xs text-[#C9A84C] tracking-widest uppercase mb-2" style={{fontFamily:"system-ui,sans-serif"}}>Trigger conditions</div>
                     {result.trigger.reasons.map((r, i) => (
-                      <div key={i} className="text-xs text-orange-400">• {r}</div>
+                      <div key={i} className="text-xs text-[#7A7268] py-1 border-b border-[#2D1010] last:border-0" style={{fontFamily:"system-ui,sans-serif"}}>
+                        {r}
+                      </div>
                     ))}
                   </div>
                 )}
 
-                <div className="bg-[#080F1E] border border-[#0D2040] rounded-2xl p-6">
-                  <div className="text-xs font-mono text-gray-500 mb-4">DECISION ENGINE OUTPUT</div>
-                  <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div className="bg-[#0D1526] rounded-xl p-4">
-                      <div className="text-xs text-gray-500">Expected Income</div>
-                      <div className="text-xl font-bold mt-1">₹{result.expected_income}</div>
-                    </div>
-                    <div className="bg-[#0D1526] rounded-xl p-4">
-                      <div className="text-xs text-gray-500">Actual Income</div>
-                      <div className="text-xl font-bold mt-1">₹{result.actual_income}</div>
-                    </div>
-                    <div className="bg-[#0D1526] rounded-xl p-4">
-                      <div className="text-xs text-gray-500">Loss</div>
-                      <div className="text-xl font-bold text-red-400 mt-1">₹{result.loss}</div>
-                    </div>
-                    <div className={`rounded-xl p-4 ${result.payout && result.payout > 0 ? "bg-green-900/30 border border-green-700/40" : "bg-[#0D1526]"}`}>
-                      <div className="text-xs text-gray-500">Payout</div>
-                      <div className={`text-xl font-bold mt-1 ${result.payout && result.payout > 0 ? "text-green-400" : "text-gray-400"}`}>
-                        ₹{result.payout}
+                <div className="border border-[#1F1F1F]">
+                  <div className="px-5 py-3 border-b border-[#1F1F1F]">
+                    <span className="text-xs text-[#7A7268] tracking-widest uppercase" style={{fontFamily:"system-ui,sans-serif"}}>Income analysis</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-px bg-[#1F1F1F]">
+                    {[
+                      { label: "Expected income", value: `₹${result.expected_income}`, accent: false },
+                      { label: "Actual income", value: `₹${result.actual_income}`, accent: false },
+                      { label: "Loss", value: `₹${result.loss}`, accent: "red" },
+                      { label: "Payout amount", value: `₹${result.payout}`, accent: result.payout && result.payout > 0 ? "green" : false },
+                    ].map(item => (
+                      <div key={item.label} className="bg-[#0A0A0A] px-5 py-5">
+                        <div className="text-xs text-[#7A7268] mb-2" style={{fontFamily:"system-ui,sans-serif"}}>{item.label}</div>
+                        <div className={`font-serif text-2xl ${item.accent === "red" ? "text-[#C87070]" : item.accent === "green" ? "text-[#7DC47D]" : ""}`}>
+                          {item.value}
+                        </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-3">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      result.status === "approved" ? "bg-green-800/40 text-green-300" :
-                      result.status === "rejected" ? "bg-red-800/40 text-red-300" :
-                      "bg-gray-800/40 text-gray-300"
-                    }`}>
-                      {result.status?.toUpperCase()}
-                    </span>
-                    {result.rejection_reason && (
-                      <span className="text-xs text-gray-500">{result.rejection_reason}</span>
-                    )}
-                    {result.fraud_score !== undefined && (
-                      <span className="text-xs text-gray-600">Fraud score: {result.fraud_score.toFixed(2)}</span>
-                    )}
+                <div className="border border-[#1F1F1F] px-5 py-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-[#7A7268] mb-1" style={{fontFamily:"system-ui,sans-serif"}}>Decision</div>
+                    <span className={`text-xs border px-3 py-1 ${
+                      result.status === "approved" ? "border-[#2D5E30] text-[#7DC47D]" :
+                      result.status === "rejected" ? "border-[#3D1820] text-[#C87070]" :
+                      "border-[#1F1F1F] text-[#7A7268]"
+                    }`} style={{fontFamily:"system-ui,sans-serif"}}>{result.status?.toUpperCase()}</span>
                   </div>
+                  {result.rejection_reason && (
+                    <div className="text-xs text-[#7A7268] text-right max-w-xs" style={{fontFamily:"system-ui,sans-serif"}}>{result.rejection_reason}</div>
+                  )}
+                  {result.fraud_score !== undefined && (
+                    <div className="text-xs text-[#3E3A36]" style={{fontFamily:"system-ui,sans-serif"}}>Fraud score: {result.fraud_score.toFixed(2)}</div>
+                  )}
                 </div>
               </>
             )}
 
-            <button
-              onClick={() => setResult(null)}
-              className="text-xs text-gray-500 hover:text-white transition-colors"
-            >
+            <button onClick={() => setResult(null)}
+              className="text-xs text-[#3E3A36] hover:text-[#7A7268] transition-colors mt-2"
+              style={{fontFamily:"system-ui,sans-serif"}}>
               ← Run again
             </button>
           </div>

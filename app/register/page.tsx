@@ -18,7 +18,6 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -35,88 +34,100 @@ export default function RegisterPage() {
     }
   }
 
+  const fieldClass = "w-full bg-[#111111] border border-[#1F1F1F] focus:border-[#C9A84C] px-4 py-2.5 text-sm text-[#F0ECE4] placeholder-[#3E3A36] outline-none transition-colors";
+
   return (
-    <div className="min-h-screen bg-[#050A14] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm">Z</div>
-            <span className="font-bold text-lg">Zensure</span>
-          </Link>
-          <h1 className="text-2xl font-bold mb-2">Create your account</h1>
-          <p className="text-gray-500 text-sm">AI calculates your risk and coverage instantly</p>
+    <div className="min-h-screen bg-[#0A0A0A] text-[#F0ECE4] flex">
+
+      {/* Left panel */}
+      <div className="hidden md:flex flex-col justify-between w-80 border-r border-[#1F1F1F] p-10 flex-shrink-0">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-7 h-7 border border-[#C9A84C] flex items-center justify-center">
+            <span className="text-[#C9A84C] font-serif text-xs font-bold">Z</span>
+          </div>
+          <span className="font-serif text-sm tracking-wide">Zensure</span>
+        </Link>
+
+        <div>
+          <div className="font-serif text-2xl leading-snug mb-6 text-[#F0ECE4]">
+            &ldquo;When it rained for three days straight, Zensure covered my loss before I even noticed.&rdquo;
+          </div>
+          <div className="text-xs text-[#7A7268]" style={{fontFamily:"system-ui,sans-serif"}}>Rajan K. — Zepto rider, Mumbai</div>
         </div>
 
-        <div className="bg-[#080F1E] border border-[#0D2040] rounded-2xl p-7">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-4">
+          {[
+            { label: "AI risk scoring", ok: true },
+            { label: "Automatic payouts", ok: true },
+            { label: "No claim forms ever", ok: true },
+          ].map(item => (
+            <div key={item.label} className="flex items-center gap-3">
+              <div className="w-4 h-4 border border-[#C9A84C] flex items-center justify-center flex-shrink-0">
+                <div className="w-1.5 h-1.5 bg-[#C9A84C]"></div>
+              </div>
+              <span className="text-xs text-[#7A7268]" style={{fontFamily:"system-ui,sans-serif"}}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center px-8 py-16">
+        <div className="w-full max-w-sm">
+          <div className="mb-1 text-[#C9A84C] text-xs tracking-widest uppercase" style={{fontFamily:"system-ui,sans-serif"}}>New account</div>
+          <h1 className="font-serif text-3xl mb-1">Get protected</h1>
+          <p className="text-[#7A7268] text-xs mb-8" style={{fontFamily:"system-ui,sans-serif"}}>AI sets your premium in seconds after you register.</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4" style={{fontFamily:"system-ui,sans-serif"}}>
             <div>
-              <label className="block text-xs text-gray-400 mb-1.5 font-medium">Full Name</label>
-              <input
-                type="text" required
-                placeholder="Rahul Kumar"
-                value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                className="w-full bg-[#0D1526] border border-[#1E3A5F] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-              />
+              <label className="block text-xs text-[#7A7268] mb-1.5">Full name</label>
+              <input type="text" required placeholder="Rahul Kumar" value={form.name}
+                onChange={e => setForm({ ...form, name: e.target.value })} className={fieldClass} />
             </div>
             <div>
-              <label className="block text-xs text-gray-400 mb-1.5 font-medium">Email</label>
-              <input
-                type="email" required
-                placeholder="rahul@example.com"
-                value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                className="w-full bg-[#0D1526] border border-[#1E3A5F] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-              />
+              <label className="block text-xs text-[#7A7268] mb-1.5">Email address</label>
+              <input type="email" required placeholder="rahul@example.com" value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })} className={fieldClass} />
             </div>
             <div>
-              <label className="block text-xs text-gray-400 mb-1.5 font-medium">Password</label>
-              <input
-                type="password" required minLength={6}
-                placeholder="Min. 6 characters"
-                value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
-                className="w-full bg-[#0D1526] border border-[#1E3A5F] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-              />
+              <label className="block text-xs text-[#7A7268] mb-1.5">Password</label>
+              <input type="password" required minLength={6} placeholder="Minimum 6 characters" value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })} className={fieldClass} />
             </div>
             <div>
-              <label className="block text-xs text-gray-400 mb-1.5 font-medium">City</label>
-              <select
-                value={form.city} onChange={e => setForm({ ...form, city: e.target.value })}
-                className="w-full bg-[#0D1526] border border-[#1E3A5F] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-              >
-                {CITIES.map(c => <option key={c}>{c}</option>)}
+              <label className="block text-xs text-[#7A7268] mb-1.5">City</label>
+              <select value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} className={fieldClass}>
+                {CITIES.map(c => <option key={c} className="bg-[#111111]">{c}</option>)}
               </select>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-medium">Daily Income (₹)</label>
-                <input
-                  type="number" min="200" max="2000"
-                  value={form.avg_income} onChange={e => setForm({ ...form, avg_income: e.target.value })}
-                  className="w-full bg-[#0D1526] border border-[#1E3A5F] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-                />
+                <label className="block text-xs text-[#7A7268] mb-1.5">Daily income (₹)</label>
+                <input type="number" min="200" max="2000" value={form.avg_income}
+                  onChange={e => setForm({ ...form, avg_income: e.target.value })} className={fieldClass} />
               </div>
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-medium">Working Hours/Day</label>
-                <input
-                  type="number" min="4" max="16"
-                  value={form.working_hours} onChange={e => setForm({ ...form, working_hours: e.target.value })}
-                  className="w-full bg-[#0D1526] border border-[#1E3A5F] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-                />
+                <label className="block text-xs text-[#7A7268] mb-1.5">Hours per day</label>
+                <input type="number" min="4" max="16" value={form.working_hours}
+                  onChange={e => setForm({ ...form, working_hours: e.target.value })} className={fieldClass} />
               </div>
             </div>
 
-            {error && <div className="bg-red-900/20 border border-red-800/50 text-red-400 text-xs px-3 py-2 rounded-lg">{error}</div>}
+            {error && (
+              <div className="border border-[#3D1820] bg-[#1F0C10] text-[#E07070] text-xs px-4 py-2.5">
+                {error}
+              </div>
+            )}
 
-            <button
-              type="submit" disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg py-3 text-sm font-semibold transition-all"
-            >
-              {loading ? "Creating account..." : "Create Account & Get Protected"}
+            <button type="submit" disabled={loading}
+              className="w-full bg-[#7B1A2A] hover:bg-[#8F2035] disabled:opacity-40 text-[#F0ECE4] py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2">
+              {loading ? "Creating account..." : <>Create account <span className="text-[#C9A84C]">→</span></>}
             </button>
           </form>
 
-          <p className="text-center text-xs text-gray-500 mt-5">
-            Already have an account?{" "}
-            <Link href="/login" className="text-blue-400 hover:text-blue-300">Sign in</Link>
+          <p className="mt-6 text-xs text-[#3E3A36] text-center" style={{fontFamily:"system-ui,sans-serif"}}>
+            Already registered?{" "}
+            <Link href="/login" className="text-[#C9A84C] hover:underline">Sign in</Link>
           </p>
         </div>
       </div>
