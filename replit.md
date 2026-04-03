@@ -5,7 +5,7 @@ Zensure is a full-stack parametric insurance platform for quick-commerce deliver
 
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router, TypeScript)
-- **Styling**: Tailwind CSS v4
+- **Styling**: Tailwind CSS v4 — Vanta black (#0A0A0A) / Burgundy (#7B1A2A) / Gold (#C9A84C), rounded-2xl/3xl cards, glass-morphism nav, gradient buttons (rounded-full), ambient radial glows
 - **Database**: PostgreSQL (Replit built-in via `pg`)
 - **Auth**: JWT (httpOnly cookies) + bcrypt
 - **Payments**: Razorpay (subscription + mock payouts)

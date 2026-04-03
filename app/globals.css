@@ -4,18 +4,15 @@
   --bg: #0A0A0A;
   --surface: #111111;
   --card: #141414;
-  --border: #1F1F1F;
-  --border-warm: #2D1418;
+  --border: rgba(255,255,255,0.06);
   --burgundy: #7B1A2A;
-  --burgundy-hover: #8F2035;
-  --burgundy-muted: #1F0C10;
-  --burgundy-border: #3D1820;
+  --burgundy-light: #9B2035;
+  --burgundy-glow: rgba(123,26,42,0.25);
   --gold: #C9A84C;
-  --gold-dim: #A88735;
-  --gold-muted: #1C1508;
+  --gold-glow: rgba(201,168,76,0.15);
   --text: #F0ECE4;
   --text-muted: #7A7268;
-  --text-dim: #3E3A36;
+  --text-dim: #3A3632;
 }
 
 * {
@@ -25,37 +22,35 @@
 }
 
 html {
-  font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
 }
 
-.sans {
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+.font-display {
+  font-family: "Georgia", "Times New Roman", serif;
 }
 
-input, select, button, textarea {
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2A1218; border-radius: 4px; }
+
+::selection { background: rgba(123,26,42,0.4); color: #F0ECE4; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-ring {
+  0%,100% { opacity: 0.6; transform: scale(1); }
+  50%     { opacity: 1;   transform: scale(1.1); }
 }
 
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: #0A0A0A;
-}
-::-webkit-scrollbar-thumb {
-  background: #2D1418;
-  border-radius: 2px;
-}
-
-::selection {
-  background: #7B1A2A;
-  color: #F0ECE4;
-}
+.animate-fade-up { animation: fadeUp 0.5s ease forwards; }
+.animate-pulse-ring { animation: pulse-ring 2s ease-in-out infinite; }

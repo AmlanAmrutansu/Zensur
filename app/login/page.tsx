@@ -29,51 +29,63 @@ export default function LoginPage() {
     }
   }
 
-  const fieldClass = "w-full bg-[#111111] border border-[#1F1F1F] focus:border-[#C9A84C] px-4 py-3 text-sm text-[#F0ECE4] placeholder-[#3E3A36] outline-none transition-colors";
-
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#F0ECE4] flex items-center justify-center px-6">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-4 relative overflow-hidden">
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[400px] rounded-full bg-[#7B1A2A] opacity-[0.06] blur-[120px] pointer-events-none" />
 
-        <Link href="/" className="flex items-center gap-3 mb-12">
-          <div className="w-7 h-7 border border-[#C9A84C] flex items-center justify-center">
-            <span className="text-[#C9A84C] font-serif text-xs font-bold">Z</span>
-          </div>
-          <span className="font-serif text-sm tracking-wide">Zensure</span>
-        </Link>
-
-        <div className="mb-1 text-[#C9A84C] text-xs tracking-widest uppercase" style={{fontFamily:"system-ui,sans-serif"}}>Welcome back</div>
-        <h1 className="font-serif text-3xl mb-1">Sign in</h1>
-        <p className="text-[#7A7268] text-xs mb-8" style={{fontFamily:"system-ui,sans-serif"}}>Access your protection dashboard.</p>
-
-        <form onSubmit={handleSubmit} className="space-y-4" style={{fontFamily:"system-ui,sans-serif"}}>
-          <div>
-            <label className="block text-xs text-[#7A7268] mb-1.5">Email address</label>
-            <input type="email" required autoComplete="email" value={form.email}
-              onChange={e => setForm({ ...form, email: e.target.value })} className={fieldClass} />
-          </div>
-          <div>
-            <label className="block text-xs text-[#7A7268] mb-1.5">Password</label>
-            <input type="password" required autoComplete="current-password" value={form.password}
-              onChange={e => setForm({ ...form, password: e.target.value })} className={fieldClass} />
-          </div>
-
-          {error && (
-            <div className="border border-[#3D1820] bg-[#1F0C10] text-[#E07070] text-xs px-4 py-2.5">
-              {error}
+      <div className="w-full max-w-md relative z-10 animate-fade-up">
+        <div className="text-center mb-10">
+          <Link href="/" className="inline-flex items-center gap-2 mb-8">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#7B1A2A] to-[#4A0F18] flex items-center justify-center shadow-lg shadow-[#7B1A2A]/30">
+              <span className="text-[#C9A84C] font-bold text-sm">Z</span>
             </div>
-          )}
+          </Link>
+          <h1 className="font-display text-3xl text-[#F0ECE4] mb-2">Welcome back</h1>
+          <p className="text-[#7A7268] text-sm">Sign in to your protection dashboard</p>
+        </div>
 
-          <button type="submit" disabled={loading}
-            className="w-full bg-[#7B1A2A] hover:bg-[#8F2035] disabled:opacity-40 text-[#F0ECE4] py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2">
-            {loading ? "Signing in..." : <>Continue <span className="text-[#C9A84C]">→</span></>}
-          </button>
-        </form>
+        <div className="bg-[#111111] rounded-3xl border border-white/6 p-8 shadow-2xl">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs text-[#7A7268] mb-2 font-medium">Email address</label>
+              <input
+                type="email" required autoComplete="email"
+                value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
+                className="w-full bg-[#0A0A0A] border border-white/6 rounded-xl px-4 py-3 text-sm text-[#F0ECE4] placeholder-[#3A3632] focus:outline-none focus:border-[#C9A84C]/40 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all duration-200"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-[#7A7268] mb-2 font-medium">Password</label>
+              <input
+                type="password" required autoComplete="current-password"
+                value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
+                className="w-full bg-[#0A0A0A] border border-white/6 rounded-xl px-4 py-3 text-sm text-[#F0ECE4] placeholder-[#3A3632] focus:outline-none focus:border-[#C9A84C]/40 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all duration-200"
+                placeholder="••••••"
+              />
+            </div>
 
-        <p className="mt-6 text-xs text-[#3E3A36] text-center" style={{fontFamily:"system-ui,sans-serif"}}>
-          No account?{" "}
-          <Link href="/register" className="text-[#C9A84C] hover:underline">Register free</Link>
-        </p>
+            {error && (
+              <div className="bg-[#7B1A2A]/10 border border-[#7B1A2A]/30 rounded-xl px-4 py-3 text-xs text-[#E07070]">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit" disabled={loading}
+              className="w-full bg-[#7B1A2A] hover:bg-[#8F2035] disabled:opacity-50 text-white rounded-xl py-3 text-sm font-semibold transition-all duration-200 shadow-lg shadow-[#7B1A2A]/30 hover:shadow-[#7B1A2A]/50 hover:scale-[1.01] mt-2"
+            >
+              {loading ? "Signing in…" : "Continue →"}
+            </button>
+          </form>
+
+          <div className="mt-6 pt-6 border-t border-white/5 text-center">
+            <p className="text-xs text-[#3A3632]">
+              No account?{" "}
+              <Link href="/register" className="text-[#C9A84C] hover:text-[#D4B86A] transition-colors">Register free</Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
