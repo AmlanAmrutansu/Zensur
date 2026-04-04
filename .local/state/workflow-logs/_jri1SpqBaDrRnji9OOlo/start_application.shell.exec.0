@@ -1,0 +1,34 @@
+[1G[0K⠙[1G[0K
+> zensure@0.1.0 dev
+> next dev -p 5000 -H 0.0.0.0
+
+[1G[0K⠙[1G[0K[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 643ms
+
+ GET / [32m200[39m in 2.1s[2m (next.js: 1937ms, application-code: 155ms)[22m
+[33m[1m⚠[22m[39m Blocked cross-origin request to Next.js dev resource /_next/webpack-hmr from "fae419a8-261b-436e-b5dd-19416b1be717-00-17twf9kf80q8k.picard.replit.dev".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['fae419a8-261b-436e-b5dd-19416b1be717-00-17twf9kf80q8k.picard.replit.dev'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET / [32m200[39m in 41ms[2m (next.js: 5ms, application-code: 36ms)[22m
+[32m[1m✓[22m[39m Compiled in 32ms
+ GET / [32m200[39m in 157ms[2m (next.js: 69ms, application-code: 87ms)[22m
+[32m[1m✓[22m[39m Compiled in 652ms
+ GET / [32m200[39m in 170ms[2m (next.js: 62ms, application-code: 108ms)[22m
+[33m[1m⚠[22m[39m Found a change in next.config.ts. Restarting the server to apply the changes...
+[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 267ms
+
+ GET / [32m200[39m in 336ms[2m (next.js: 184ms, application-code: 152ms)[22m
+[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy

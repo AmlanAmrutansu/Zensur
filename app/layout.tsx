@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Zensure — AI Income Protection",
@@ -8,11 +15,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <head>
-        <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async />
       </head>
-      <body>{children}</body>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   );
 }

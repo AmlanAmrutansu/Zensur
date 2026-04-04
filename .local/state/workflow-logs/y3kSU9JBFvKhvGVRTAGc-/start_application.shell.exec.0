@@ -1,0 +1,60 @@
+
+> zensure@0.1.0 dev
+> next dev -p 5000 -H 0.0.0.0
+
+[1G[0K[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 330ms
+[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / [32m200[39m in 763ms[2m (next.js: 614ms, application-code: 149ms)[22m
+[33m[1m⚠[22m[39m Blocked cross-origin request to Next.js dev resource /_next/webpack-hmr from "fae419a8-261b-436e-b5dd-19416b1be717-00-17twf9kf80q8k.picard.replit.dev".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['fae419a8-261b-436e-b5dd-19416b1be717-00-17twf9kf80q8k.picard.replit.dev'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET /api/init-db/auto [32m200[39m in 2.0s[2m (next.js: 582ms, application-code: 1444ms)[22m
+Register error: error: column "date" is of type date but expression is of type integer
+    at async query (lib/db.ts:13:17)
+    at async POST (app/api/auth/register/route.ts:42:7)
+  [90m11 |[0m   [36mconst[0m client = [36mawait[0m pool.connect();
+  [90m12 |[0m   [36mtry[0m {
+[31m[1m>[0m [90m13 |[0m     [36mconst[0m res = [36mawait[0m client.query(text, params);
+  [90m   |[0m                 [31m[1m^[0m
+  [90m14 |[0m     [36mreturn[0m res;
+  [90m15 |[0m   } [36mfinally[0m {
+  [90m16 |[0m     client.release(); {
+  length: [33m189[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'68'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'594'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+ POST /api/auth/register [31m500[39m in 630ms[2m (next.js: 135ms, application-code: 495ms)[22m
+[33m[1m⚠[22m[39m Found a change in next.config.ts. Restarting the server to apply the changes...
+[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 268ms
+[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / [32m200[39m in 633ms[2m (next.js: 486ms, application-code: 147ms)[22m

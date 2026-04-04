@@ -1,0 +1,59 @@
+
+> zensure@0.1.0 dev
+> next dev -p 5000 -H 0.0.0.0
+
+[1G[0K[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 609ms
+[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / [32m200[39m in 493ms[2m (next.js: 318ms, application-code: 175ms)[22m
+ GET / [32m200[39m in 97ms[2m (next.js: 4ms, application-code: 93ms)[22m
+ GET / [32m200[39m in 65ms[2m (next.js: 3ms, application-code: 62ms)[22m
+ GET /api/auth/me [33m401[39m in 159ms[2m (next.js: 145ms, application-code: 14ms)[22m
+ GET /api/auth/me [33m401[39m in 7ms[2m (next.js: 3ms, application-code: 5ms)[22m
+ GET /api/auth/me [33m401[39m in 8ms[2m (next.js: 2ms, application-code: 6ms)[22m
+ GET / [32m200[39m in 183ms[2m (next.js: 125ms, application-code: 59ms)[22m
+ GET / [32m200[39m in 28ms[2m (next.js: 4ms, application-code: 25ms)[22m
+ GET / [32m200[39m in 19ms[2m (next.js: 3ms, application-code: 17ms)[22m
+ GET / [32m200[39m in 124ms[2m (next.js: 89ms, application-code: 34ms)[22m
+ GET / [32m200[39m in 19ms[2m (next.js: 3ms, application-code: 16ms)[22m
+ GET / [32m200[39m in 20ms[2m (next.js: 3ms, application-code: 17ms)[22m
+ GET / [32m200[39m in 23ms[2m (next.js: 3ms, application-code: 20ms)[22m
+ GET / [32m200[39m in 21ms[2m (next.js: 2ms, application-code: 18ms)[22m
+ GET / [32m200[39m in 21ms[2m (next.js: 3ms, application-code: 18ms)[22m
+ GET / [32m200[39m in 21ms[2m (next.js: 3ms, application-code: 18ms)[22m
+ GET / [32m200[39m in 18ms[2m (next.js: 2ms, application-code: 15ms)[22m
+ GET / [32m200[39m in 19ms[2m (next.js: 2ms, application-code: 16ms)[22m
+ GET / [32m200[39m in 18ms[2m (next.js: 2ms, application-code: 16ms)[22m
+ GET / [32m200[39m in 20ms[2m (next.js: 3ms, application-code: 17ms)[22m
+ GET / [32m200[39m in 25ms[2m (next.js: 3ms, application-code: 22ms)[22m
+ GET / [32m200[39m in 16ms[2m (next.js: 2ms, application-code: 14ms)[22m
+ GET / [32m200[39m in 16ms[2m (next.js: 2ms, application-code: 13ms)[22m
+ GET / [32m200[39m in 16ms[2m (next.js: 2ms, application-code: 14ms)[22m
+ GET / [32m200[39m in 18ms[2m (next.js: 2ms, application-code: 15ms)[22m
+ GET / [32m200[39m in 17ms[2m (next.js: 3ms, application-code: 15ms)[22m
+ GET / [32m200[39m in 21ms[2m (next.js: 2ms, application-code: 19ms)[22m
+ GET / [32m200[39m in 16ms[2m (next.js: 2ms, application-code: 14ms)[22m
+ GET / [32m200[39m in 16ms[2m (next.js: 2ms, application-code: 14ms)[22m
+ GET / [32m200[39m in 19ms[2m (next.js: 2ms, application-code: 17ms)[22m
+ GET / [32m200[39m in 35ms[2m (next.js: 19ms, application-code: 16ms)[22m
+ GET / [32m200[39m in 22ms[2m (next.js: 2ms, application-code: 20ms)[22m
+ GET / [32m200[39m in 19ms[2m (next.js: 1999µs, application-code: 17ms)[22m
+ GET / [32m200[39m in 17ms[2m (next.js: 3ms, application-code: 14ms)[22m
+ GET / [32m200[39m in 16ms[2m (next.js: 2ms, application-code: 14ms)[22m
+ GET / [32m200[39m in 17ms[2m (next.js: 2ms, application-code: 15ms)[22m
+ GET / [32m200[39m in 25ms[2m (next.js: 2ms, application-code: 22ms)[22m
+ GET / [32m200[39m in 18ms[2m (next.js: 2ms, application-code: 16ms)[22m
+ GET / [32m200[39m in 15ms[2m (next.js: 2ms, application-code: 12ms)[22m
+ GET / [32m200[39m in 18ms[2m (next.js: 2ms, application-code: 16ms)[22m
+ GET / [32m200[39m in 15ms[2m (next.js: 1740µs, application-code: 13ms)[22m
+ GET / [32m200[39m in 15ms[2m (next.js: 1970µs, application-code: 13ms)[22m
+ GET / [32m200[39m in 15ms[2m (next.js: 2ms, application-code: 13ms)[22m
+ GET / [32m200[39m in 19ms[2m (next.js: 6ms, application-code: 13ms)[22m
+ GET / [32m200[39m in 14ms[2m (next.js: 1866µs, application-code: 12ms)[22m
+ GET / [32m200[39m in 15ms[2m (next.js: 2ms, application-code: 13ms)[22m
+ GET / [32m200[39m in 15ms[2m (next.js: 2ms, application-code: 13ms)[22m
+ GET / [32m200[39m in 21ms[2m (next.js: 2ms, application-code: 19ms)[22m
+ GET / [32m200[39m in 14ms[2m (next.js: 2ms, application-code: 12ms)[22m

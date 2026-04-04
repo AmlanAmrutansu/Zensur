@@ -2,6 +2,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  Shield, Zap, CheckCircle2, XCircle, CloudRain, Thermometer,
+  Wind, ChevronLeft, AlertTriangle, Brain, IndianRupee, TrendingDown, Activity,
+} from "lucide-react";
 
 interface PayoutResult {
   eligible: boolean;
@@ -16,6 +20,8 @@ interface PayoutResult {
   payout?: number;
   rejection_reason?: string;
   fraud_score?: number;
+  reasoning?: string;
+  confidence?: number;
 }
 
 export default function PayoutPage() {
@@ -42,75 +48,80 @@ export default function PayoutPage() {
   }
 
   if (checking) return (
-    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-lg bg-[#7B1A2A]/20 animate-pulse" />
+    <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
+      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 animate-pulse" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#F0ECE4]">
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-[#7B1A2A] opacity-[0.05] blur-[120px] pointer-events-none" />
+    <div className="min-h-screen bg-[#09090b] text-white">
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-emerald-500/5 blur-[130px]" />
+      </div>
 
-      <nav className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-xl">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7B1A2A] to-[#4A0F18] flex items-center justify-center">
-            <span className="text-[#C9A84C] font-bold text-xs">Z</span>
-          </div>
-          <span className="font-semibold text-sm tracking-tight">Zensure</span>
-        </Link>
-        <Link href="/dashboard" className="text-xs text-[#7A7268] hover:text-[#F0ECE4] px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all duration-200">
-          ← Dashboard
-        </Link>
+      <nav className="sticky top-0 z-50 border-b border-zinc-800/60 bg-[#09090b]/80 backdrop-blur-xl">
+        <div className="max-w-lg mx-auto px-4 py-3.5 flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-500/30">
+              <Shield size={13} className="text-white" />
+            </div>
+            <span className="font-bold text-sm tracking-tight">Zensure</span>
+          </Link>
+          <Link href="/dashboard" className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors min-h-[40px] px-3 rounded-lg hover:bg-zinc-800/60">
+            <ChevronLeft size={13} /> Dashboard
+          </Link>
+        </div>
       </nav>
 
-      <div className="max-w-lg mx-auto px-6 py-12">
-        <div className="mb-10 animate-fade-up">
-          <div className="text-xs text-[#C9A84C] font-medium tracking-widest uppercase mb-2">Decision engine</div>
-          <h1 className="font-display text-3xl mb-2">Payout analysis</h1>
-          <p className="text-[#7A7268] text-xs leading-relaxed">
-            Cross-checks weather, AQI, activity, and fraud indicators before calculating your payout.
+      <div className="max-w-lg mx-auto px-4 py-10 relative z-10">
+        <div className="mb-8 animate-fade-up">
+          <div className="badge-emerald mb-3">
+            <Brain size={11} /> AI Decision Engine
+          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight mb-1">Payout Analysis</h1>
+          <p className="text-zinc-500 text-xs leading-relaxed">
+            7-step check: trigger detection → income prediction → activity validation → fraud detection → deductible → payout cap → AI decision.
           </p>
         </div>
 
         {!result && (
-          <div className="bg-[#111111] rounded-3xl border border-white/5 p-10 text-center animate-fade-up">
-            <div className="w-16 h-16 rounded-2xl bg-[#7B1A2A]/10 border border-[#7B1A2A]/20 flex items-center justify-center mx-auto mb-6">
-              <span className="text-2xl">🔍</span>
+          <div className="glass-card border border-zinc-800 p-8 text-center animate-fade-up">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-500/12 border border-emerald-500/20 flex items-center justify-center mx-auto mb-5">
+              <Zap size={26} className="text-emerald-400" />
             </div>
-            <h2 className="font-display text-xl mb-3">Run payout check</h2>
-            <p className="text-[#7A7268] text-xs mb-8 leading-relaxed max-w-xs mx-auto">
-              7-step analysis: trigger detection → income prediction → activity estimate →
-              intent validation → fraud check → deductible → payout cap.
+            <h2 className="text-lg font-extrabold mb-2">Run payout check</h2>
+            <p className="text-zinc-500 text-xs mb-7 leading-relaxed max-w-xs mx-auto">
+              Groq AI cross-checks live weather, your AQI, tracked activity, and fraud indicators to calculate your payout in seconds.
             </p>
             <button onClick={checkPayout} disabled={loading}
-              className="bg-[#7B1A2A] hover:bg-[#8F2035] disabled:opacity-50 text-white px-10 py-3.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-xl shadow-[#7B1A2A]/30 hover:shadow-[#7B1A2A]/50 hover:scale-105 inline-flex items-center gap-2">
+              className="btn-emerald px-10 py-4 text-base inline-flex items-center gap-2.5 animate-glow-emerald">
               {loading ? (
-                <>
-                  <span className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-                  Analyzing…
-                </>
-              ) : "Run analysis →"}
+                <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Analyzing…</>
+              ) : (
+                <><Zap size={16} />Run analysis</>
+              )}
             </button>
           </div>
         )}
 
         {result && (
-          <div className="space-y-4 animate-fade-up">
+          <div className="space-y-4 animate-fade-in">
 
             {/* Conditions */}
             {result.weather && (
-              <div className="bg-[#111111] rounded-2xl border border-white/5 p-5">
-                <div className="text-xs text-[#7A7268] uppercase tracking-widest font-medium mb-4">Today&apos;s conditions</div>
+              <div className="glass-card border border-zinc-800 p-5">
+                <p className="text-xs text-zinc-500 font-semibold uppercase tracking-widest mb-4">Live conditions</p>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { label: "Rainfall", value: `${result.weather.rainfall}mm`, warn: (result.weather.rainfall ?? 0) > 70 },
-                    { label: "Temperature", value: `${result.weather.temperature}°C`, warn: (result.weather.temperature ?? 0) > 42 },
-                    { label: "AQI", value: `${result.aqi}`, warn: (result.aqi ?? 0) > 400 },
+                    { icon: CloudRain,   label: "Rainfall",    value: `${result.weather.rainfall}mm`, warn: (result.weather.rainfall ?? 0) > 70, color: "text-blue-400" },
+                    { icon: Thermometer, label: "Temperature", value: `${result.weather.temperature}°C`, warn: (result.weather.temperature ?? 0) > 42, color: "text-amber-400" },
+                    { icon: Wind,        label: "AQI",         value: `${result.aqi}`, warn: (result.aqi ?? 0) > 400, color: "text-red-400" },
                   ].map(c => (
-                    <div key={c.label} className={`rounded-xl p-3.5 text-center ${c.warn ? "bg-[#7B1A2A]/10 border border-[#7B1A2A]/20" : "bg-[#0A0A0A]"}`}>
-                      <div className="text-xs text-[#7A7268] mb-1.5">{c.label}</div>
-                      <div className={`font-display text-xl ${c.warn ? "text-[#E07070]" : "text-[#F0ECE4]"}`}>{c.value}</div>
-                      {c.warn && <div className="text-xs text-[#7B1A2A] mt-1">⚠ Triggered</div>}
+                    <div key={c.label} className={`rounded-xl p-3.5 text-center border ${c.warn ? "bg-red-500/10 border-red-500/20" : "bg-zinc-900/60 border-zinc-800"}`}>
+                      <c.icon size={16} className={`mx-auto mb-1.5 ${c.warn ? "text-red-400" : "text-zinc-600"}`} />
+                      <div className="text-xs text-zinc-500 mb-1">{c.label}</div>
+                      <div className={`font-extrabold text-base ${c.warn ? "text-red-400" : "text-white"}`}>{c.value}</div>
+                      {c.warn && <div className="text-xs text-red-500 mt-1 font-semibold">⚠ Triggered</div>}
                     </div>
                   ))}
                 </div>
@@ -119,10 +130,12 @@ export default function PayoutPage() {
 
             {/* Not eligible */}
             {!result.eligible && (
-              <div className="bg-[#111111] rounded-2xl border border-white/5 p-6 text-center">
-                <div className="text-3xl mb-3">☁️</div>
-                <div className="font-display text-lg mb-2">No payout triggered</div>
-                <div className="text-[#7A7268] text-xs">{result.reason}</div>
+              <div className="glass-card border border-zinc-800 p-6 text-center">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center mx-auto mb-4">
+                  <AlertTriangle size={22} className="text-zinc-500" />
+                </div>
+                <div className="font-bold text-base mb-2">No payout triggered</div>
+                <div className="text-zinc-500 text-xs">{result.reason}</div>
               </div>
             )}
 
@@ -130,56 +143,81 @@ export default function PayoutPage() {
             {result.eligible && (
               <>
                 {result.trigger?.reasons && result.trigger.reasons.length > 0 && (
-                  <div className="bg-[#7B1A2A]/10 border border-[#7B1A2A]/25 rounded-2xl p-4">
-                    <div className="text-xs text-[#C9A84C] font-medium mb-2 uppercase tracking-widest">Triggers active</div>
+                  <div className="bg-amber-500/10 border border-amber-500/25 rounded-2xl p-4">
+                    <div className="text-xs text-amber-400 font-semibold uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
+                      <AlertTriangle size={11} /> Active triggers
+                    </div>
                     {result.trigger.reasons.map((r, i) => (
-                      <div key={i} className="text-xs text-[#7A7268] py-1 flex items-center gap-2">
-                        <span className="w-1 h-1 rounded-full bg-[#7B1A2A]" />
-                        {r}
+                      <div key={i} className="flex items-center gap-2 text-xs text-zinc-400 py-1.5 border-b border-amber-500/10 last:border-0">
+                        <div className="w-1 h-1 rounded-full bg-amber-400 flex-shrink-0" /> {r}
                       </div>
                     ))}
                   </div>
                 )}
 
-                <div className="bg-[#111111] rounded-2xl border border-white/5 p-5">
-                  <div className="text-xs text-[#7A7268] uppercase tracking-widest font-medium mb-4">Income analysis</div>
-                  <div className="grid grid-cols-2 gap-3 mb-5">
+                {/* Income breakdown */}
+                <div className="glass-card border border-zinc-800 p-5">
+                  <p className="text-xs text-zinc-500 font-semibold uppercase tracking-widest mb-4">Income analysis</p>
+                  <div className="grid grid-cols-2 gap-3 mb-4">
                     {[
-                      { label: "Expected income", value: `₹${result.expected_income}`, highlight: "" },
-                      { label: "Actual income", value: `₹${result.actual_income}`, highlight: "" },
-                      { label: "Loss calculated", value: `₹${result.loss}`, highlight: "text-[#E07070]" },
+                      { label: "Expected income", value: `₹${result.expected_income}`, icon: IndianRupee, color: "text-white", highlight: false },
+                      { label: "Actual income",   value: `₹${result.actual_income}`,   icon: Activity,    color: "text-white", highlight: false },
+                      { label: "Loss calculated", value: `₹${result.loss}`,             icon: TrendingDown,color: "text-red-400", highlight: "red" },
                       {
                         label: "Payout amount",
                         value: `₹${result.payout}`,
-                        highlight: result.payout && result.payout > 0 ? "text-emerald-400" : "text-[#3A3632]",
+                        icon: IndianRupee,
+                        color: result.payout && result.payout > 0 ? "text-emerald-400" : "text-zinc-500",
+                        highlight: result.payout && result.payout > 0 ? "emerald" : false,
                       },
                     ].map(item => (
-                      <div key={item.label} className={`rounded-xl p-4 ${item.label === "Payout amount" && result.payout && result.payout > 0 ? "bg-emerald-500/8 border border-emerald-500/15" : "bg-[#0A0A0A]"}`}>
-                        <div className="text-xs text-[#7A7268] mb-2">{item.label}</div>
-                        <div className={`font-display text-2xl ${item.highlight}`}>{item.value}</div>
+                      <div key={item.label} className={`rounded-xl p-4 border ${
+                        item.highlight === "emerald" ? "bg-emerald-500/10 border-emerald-500/20" :
+                        item.highlight === "red"     ? "bg-red-500/10 border-red-500/20" :
+                        "bg-zinc-900/60 border-zinc-800"
+                      }`}>
+                        <div className="text-xs text-zinc-500 mb-2 flex items-center gap-1.5">
+                          <item.icon size={11} /> {item.label}
+                        </div>
+                        <div className={`text-2xl font-extrabold ${item.color}`}>{item.value}</div>
                       </div>
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-                    <span className={`text-xs px-3 py-1 rounded-full border font-medium ${
-                      result.status === "approved" ? "border-emerald-500/30 text-emerald-400 bg-emerald-500/10" :
-                      result.status === "rejected" ? "border-red-500/30 text-[#E07070] bg-red-500/10" :
-                      "border-white/10 text-[#7A7268]"
-                    }`}>{result.status}</span>
+                  {/* Status row */}
+                  <div className="flex items-center gap-3 pt-4 border-t border-zinc-800">
+                    <span className={result.status === "approved" ? "badge-emerald" : result.status === "rejected" ? "badge-red" : "badge-amber"}>
+                      {result.status === "approved" ? <CheckCircle2 size={11} /> : <XCircle size={11} />}
+                      {result.status}
+                    </span>
                     {result.rejection_reason && (
-                      <span className="text-xs text-[#7A7268]">{result.rejection_reason}</span>
+                      <span className="text-xs text-zinc-500">{result.rejection_reason}</span>
                     )}
                     {result.fraud_score !== undefined && (
-                      <span className="text-xs text-[#3A3632] ml-auto">Fraud: {result.fraud_score.toFixed(2)}</span>
+                      <span className="ml-auto text-xs text-zinc-600">
+                        Fraud: {result.fraud_score.toFixed(2)}
+                      </span>
                     )}
                   </div>
                 </div>
+
+                {/* AI Reasoning */}
+                {result.reasoning && (
+                  <div className="glass-card border border-blue-500/20 bg-blue-500/5 p-5 animate-fade-in">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Brain size={13} className="text-blue-400" />
+                      <span className="text-xs text-blue-400 font-semibold uppercase tracking-widest">Groq AI Reasoning</span>
+                      {result.confidence !== undefined && (
+                        <span className="ml-auto badge-blue">{Math.round(result.confidence * 100)}% confidence</span>
+                      )}
+                    </div>
+                    <p className="text-sm text-zinc-300 leading-relaxed">{result.reasoning}</p>
+                  </div>
+                )}
               </>
             )}
 
-            <button onClick={() => setResult(null)}
-              className="text-xs text-[#3A3632] hover:text-[#7A7268] transition-colors py-2">
+            <button onClick={() => setResult(null)} className="btn-ghost w-full text-sm flex items-center justify-center gap-2">
               ← Run again
             </button>
           </div>

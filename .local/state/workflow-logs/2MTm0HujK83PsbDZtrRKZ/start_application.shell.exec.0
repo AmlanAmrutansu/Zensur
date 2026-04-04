@@ -1,0 +1,23 @@
+
+> zensure@0.1.0 dev
+> next dev -p 5000 -H 0.0.0.0
+
+[1G[0K[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 326ms
+[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / [32m200[39m in 496ms[2m (next.js: 348ms, application-code: 148ms)[22m
+ GET /api/auth/me [33m401[39m in 238ms[2m (next.js: 209ms, application-code: 29ms)[22m
+ GET /api/init-db/auto [32m200[39m in 42ms[2m (next.js: 21ms, application-code: 21ms)[22m
+ POST /api/auth/register [32m200[39m in 391ms[2m (next.js: 21ms, application-code: 370ms)[22m
+ GET /api/dashboard [32m200[39m in 728ms[2m (next.js: 105ms, application-code: 622ms)[22m
+ GET /api/dashboard [32m200[39m in 13ms[2m (next.js: 3ms, application-code: 10ms)[22m
+ GET / [32m200[39m in 48ms[2m (next.js: 3ms, application-code: 45ms)[22m
+ GET /api/auth/me [33m401[39m in 8ms[2m (next.js: 3ms, application-code: 5ms)[22m
+[32m[1m✓[22m[39m Compiled in 1054ms
+[32m[1m✓[22m[39m Compiled in 104ms
+[32m[1m✓[22m[39m Compiled in 83ms
+[32m[1m✓[22m[39m Compiled in 97ms
+[32m[1m✓[22m[39m Compiled in 92ms

@@ -1,0 +1,18 @@
+
+> zensure@0.1.0 dev
+> next dev -p 5000 -H 0.0.0.0
+
+[1G[0K[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 553ms
+[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / [32m200[39m in 1409ms[2m (next.js: 1259ms, application-code: 150ms)[22m
+ GET /api/auth/me [33m401[39m in 141ms[2m (next.js: 123ms, application-code: 18ms)[22m
+ GET /login [32m200[39m in 657ms[2m (next.js: 558ms, proxy.ts: 76ms, application-code: 23ms)[22m
+ GET /register [32m200[39m in 390ms[2m (next.js: 366ms, proxy.ts: 4ms, application-code: 20ms)[22m
+ GET / [32m200[39m in 37ms[2m (next.js: 3ms, application-code: 34ms)[22m
+ GET /api/auth/me [33m401[39m in 7ms[2m (next.js: 2ms, application-code: 5ms)[22m
+ GET /login [32m200[39m in 61ms[2m (next.js: 3ms, proxy.ts: 6ms, application-code: 52ms)[22m
+ GET /register [32m200[39m in 42ms[2m (next.js: 4ms, proxy.ts: 4ms, application-code: 34ms)[22m

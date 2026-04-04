@@ -1,0 +1,21 @@
+
+> zensure@0.1.0 dev
+> next dev -p 5000 -H 0.0.0.0
+
+[1G[0K[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 677ms
+[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / [32m200[39m in 886ms[2m (next.js: 710ms, application-code: 177ms)[22m
+ GET /api/auth/me [33m401[39m in 335ms[2m (next.js: 321ms, application-code: 14ms)[22m
+[33m[1m⚠[22m[39m Found a change in next.config.ts. Restarting the server to apply the changes...
+[1m[38;2;173;127;168m▲ Next.js 16.2.2[39m[22m (Turbopack)
+- Local:         http://localhost:5000
+- Network:       http://0.0.0.0:5000
+[32m[1m✓[22m[39m Ready in 322ms
+[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / [32m200[39m in 331ms[2m (next.js: 153ms, application-code: 178ms)[22m
+ GET /api/auth/me [33m401[39m in 118ms[2m (next.js: 101ms, application-code: 16ms)[22m

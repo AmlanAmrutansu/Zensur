@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Shield, MapPin, Clock, Navigation, Activity, ChevronLeft, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function TrackerPage() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function TrackerPage() {
   const [notice, setNotice] = useState("");
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const watchRef = useRef<number | null>(null);
-  const simRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const simRef   = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const stopTracking = useCallback(async () => {
     setTracking(false);
@@ -41,7 +42,6 @@ export default function TrackerPage() {
         location_variance: variance,
       }),
     });
-
     if (res.status === 401) { router.push("/login"); return; }
     if (res.ok) setSaved(true);
   }, [elapsed, distance, locationPoints, router]);
@@ -58,18 +58,17 @@ export default function TrackerPage() {
 
     if ("geolocation" in navigator) {
       watchRef.current = navigator.geolocation.watchPosition(
-        (pos) => {
+        pos => {
           setLastPos(prev => {
             if (prev) {
-              const d = haversine(prev.latitude, prev.longitude, pos.coords.latitude, pos.coords.longitude);
-              setDistance(pd => pd + d);
+              setDistance(pd => pd + haversine(prev.latitude, prev.longitude, pos.coords.latitude, pos.coords.longitude));
             }
             return pos.coords;
           });
           setLocationPoints(prev => [...prev, [pos.coords.latitude, pos.coords.longitude]]);
         },
         () => {
-          setNotice("GPS unavailable — simulating distance");
+          setNotice("GPS unavailable — simulating distance tracking");
           simRef.current = setInterval(() => setDistance(p => p + 0.003), 1000);
         },
         { enableHighAccuracy: true, maximumAge: 30000 }
@@ -87,122 +86,149 @@ export default function TrackerPage() {
   }, []);
 
   const hours = Math.floor(elapsed / 3600);
-  const mins = Math.floor((elapsed % 3600) / 60);
-  const secs = elapsed % 60;
+  const mins  = Math.floor((elapsed % 3600) / 60);
+  const secs  = elapsed % 60;
   const fmt = (n: number) => String(n).padStart(2, "0");
-  const targetHours = 8;
-  const pct = Math.min((elapsed / (targetHours * 3600)) * 100, 100);
-  const circumference = 2 * Math.PI * 54;
-  const strokeDash = circumference - (pct / 100) * circumference;
+  const targetHrs = 8;
+  const pct = Math.min((elapsed / (targetHrs * 3600)) * 100, 100);
+
+  // SVG ring
+  const R = 80, stroke = 8;
+  const circ = 2 * Math.PI * R;
+  const dash  = circ - (pct / 100) * circ;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#F0ECE4]">
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[400px] h-[300px] rounded-full bg-[#7B1A2A] opacity-[0.05] blur-[100px] pointer-events-none" />
+    <div className="min-h-screen bg-[#09090b] text-white">
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-blue-500/5 blur-[120px]" />
+      </div>
 
-      <nav className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-xl">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7B1A2A] to-[#4A0F18] flex items-center justify-center">
-            <span className="text-[#C9A84C] font-bold text-xs">Z</span>
-          </div>
-          <span className="font-semibold text-sm tracking-tight">Zensure</span>
-        </Link>
-        <Link href="/dashboard" className="text-xs text-[#7A7268] hover:text-[#F0ECE4] px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all duration-200">
-          ← Dashboard
-        </Link>
+      <nav className="sticky top-0 z-50 border-b border-zinc-800/60 bg-[#09090b]/80 backdrop-blur-xl">
+        <div className="max-w-lg mx-auto px-4 py-3.5 flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-500/30">
+              <Shield size={13} className="text-white" />
+            </div>
+            <span className="font-bold text-sm tracking-tight">Zensure</span>
+          </Link>
+          <Link href="/dashboard" className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors min-h-[40px] px-3 rounded-lg hover:bg-zinc-800/60">
+            <ChevronLeft size={13} /> Dashboard
+          </Link>
+        </div>
       </nav>
 
-      <div className="max-w-md mx-auto px-6 py-12">
-        <div className="text-center mb-10 animate-fade-up">
-          <div className="text-xs text-[#C9A84C] font-medium tracking-widest uppercase mb-2">Activity tracker</div>
-          <h1 className="font-display text-3xl mb-2">Track your shift</h1>
-          <p className="text-[#7A7268] text-xs leading-relaxed max-w-xs mx-auto">
-            Log your hours and distance to stay eligible for automatic payouts.
-          </p>
+      <div className="max-w-lg mx-auto px-4 py-10 relative z-10">
+        <div className="mb-8 animate-fade-up">
+          <div className="flex items-center gap-2 mb-1">
+            {tracking && (
+              <div className="relative">
+                <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse-dot" />
+                <div className="absolute inset-0 rounded-full bg-blue-400/30 animate-ping" />
+              </div>
+            )}
+            <p className="text-xs text-blue-400 font-semibold uppercase tracking-widest">
+              {tracking ? "Live Tracking" : "Activity Tracker"}
+            </p>
+          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight mb-1">Track your shift</h1>
+          <p className="text-zinc-500 text-xs">Log hours and distance to stay eligible for automatic payouts.</p>
         </div>
 
-        {/* Circular timer */}
-        <div className="flex justify-center mb-8">
-          <div className="relative w-36 h-36">
-            <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="54" fill="none" stroke="#1A1A1A" strokeWidth="6" />
-              <circle cx="60" cy="60" r="54" fill="none"
-                stroke={tracking ? "#7B1A2A" : "#2A1218"}
-                strokeWidth="6"
+        {/* Ring timer */}
+        <div className="flex flex-col items-center mb-8 animate-fade-up">
+          <div className="relative w-48 h-48">
+            <svg className="w-full h-full -rotate-90" viewBox="0 0 180 180">
+              <circle cx="90" cy="90" r={R} fill="none" stroke="#27272a" strokeWidth={stroke} />
+              <circle cx="90" cy="90" r={R} fill="none"
+                stroke={tracking ? "#3b82f6" : "#1d4ed8"}
+                strokeWidth={stroke}
                 strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDash}
+                strokeDasharray={circ}
+                strokeDashoffset={dash}
                 className="transition-all duration-1000"
+                style={{ filter: tracking ? "drop-shadow(0 0 8px rgba(59,130,246,0.5))" : "none" }}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="font-mono text-2xl font-semibold tabular-nums text-[#F0ECE4]">
+              <div className="font-mono text-3xl font-extrabold tabular-nums tracking-tight">
                 {fmt(hours)}:{fmt(mins)}
               </div>
-              <div className="text-[#3A3632] text-xs font-mono">{fmt(secs)}s</div>
+              <div className="text-zinc-600 text-xs font-mono">{fmt(secs)}s</div>
+              <div className="text-xs text-zinc-500 mt-1">{Math.round(pct)}% of {targetHrs}h</div>
             </div>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="bg-[#111111] rounded-2xl border border-white/5 p-5 text-center">
-            <div className="font-display text-3xl text-[#C9A84C] mb-1">{distance.toFixed(2)}</div>
-            <div className="text-xs text-[#3A3632]">km covered</div>
+        <div className="grid grid-cols-2 gap-3 mb-5">
+          <div className="stat-card border border-zinc-800 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-zinc-500 mb-2">
+              <Navigation size={12} className="text-blue-400" /> Distance
+            </div>
+            <div className="text-3xl font-extrabold text-blue-400">{distance.toFixed(2)}</div>
+            <div className="text-xs text-zinc-600 mt-0.5">km covered</div>
           </div>
-          <div className="bg-[#111111] rounded-2xl border border-white/5 p-5 text-center">
-            <div className="font-display text-3xl mb-1">{(elapsed / 3600).toFixed(2)}</div>
-            <div className="text-xs text-[#3A3632]">hours active</div>
-          </div>
-        </div>
-
-        {/* Progress bar */}
-        <div className="mb-6">
-          <div className="flex justify-between text-xs text-[#3A3632] mb-2">
-            <span>Progress toward {targetHours}h target</span>
-            <span>{Math.round(pct)}%</span>
-          </div>
-          <div className="h-1.5 bg-[#111111] rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-[#7B1A2A] to-[#C9A84C] rounded-full transition-all duration-1000"
-              style={{width: `${pct}%`}} />
+          <div className="stat-card border border-zinc-800 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-zinc-500 mb-2">
+              <Clock size={12} className="text-emerald-400" /> Time
+            </div>
+            <div className="text-3xl font-extrabold text-emerald-400">{(elapsed / 3600).toFixed(2)}</div>
+            <div className="text-xs text-zinc-600 mt-0.5">hours active</div>
           </div>
         </div>
 
-        {/* Buttons */}
+        {/* Progress */}
+        <div className="glass-card border border-zinc-800 p-4 mb-5">
+          <div className="flex justify-between text-xs text-zinc-500 mb-2.5">
+            <span className="flex items-center gap-1.5"><Activity size={11} />Progress toward {targetHrs}h target</span>
+            <span className="font-semibold text-white">{Math.round(pct)}%</span>
+          </div>
+          <div className="progress-track">
+            <div className="progress-fill-blue" style={{width:`${pct}%`}} />
+          </div>
+        </div>
+
+        {/* Action buttons */}
         {!tracking && !saved && (
           <button onClick={startTracking}
-            className="w-full bg-[#7B1A2A] hover:bg-[#8F2035] text-white rounded-2xl py-4 text-sm font-semibold transition-all duration-300 shadow-xl shadow-[#7B1A2A]/30 hover:shadow-[#7B1A2A]/50 hover:scale-[1.02] animate-fade-up">
-            Start shift
+            className="btn-blue w-full text-sm flex items-center justify-center gap-2 py-4 rounded-2xl animate-fade-up">
+            <Activity size={16} /> Start shift
           </button>
         )}
 
         {tracking && (
           <button onClick={stopTracking}
-            className="w-full border border-[#7B1A2A]/50 hover:border-[#7B1A2A] bg-[#7B1A2A]/10 hover:bg-[#7B1A2A]/20 text-[#C9A84C] rounded-2xl py-4 text-sm font-semibold transition-all duration-200">
+            className="w-full py-4 text-sm font-semibold rounded-2xl border border-blue-500/40 text-blue-400 hover:bg-blue-500/10 transition-all flex items-center justify-center gap-2 min-h-[56px]">
             End shift & save
           </button>
         )}
 
         {saved && (
-          <div className="bg-emerald-500/8 border border-emerald-500/20 rounded-2xl p-5 text-center animate-fade-up">
-            <div className="text-emerald-400 font-semibold mb-1 text-sm">Shift saved ✓</div>
-            <div className="text-[#7A7268] text-xs mb-4">
+          <div className="bg-emerald-500/10 border border-emerald-500/25 rounded-2xl p-5 text-center animate-fade-in">
+            <CheckCircle2 size={28} className="text-emerald-400 mx-auto mb-2" />
+            <div className="font-semibold text-emerald-300 mb-1">Shift saved successfully</div>
+            <div className="text-xs text-zinc-500 mb-4">
               {(elapsed / 3600).toFixed(2)}h active · {distance.toFixed(2)} km
             </div>
-            <Link href="/payout" className="inline-flex text-xs bg-[#7B1A2A] hover:bg-[#8F2035] text-white px-5 py-2 rounded-full transition-all duration-200">
-              Check payout eligibility →
+            <Link href="/payout" className="btn-emerald px-6 py-2.5 text-sm inline-flex items-center gap-2">
+              Check payout eligibility
             </Link>
           </div>
         )}
 
         {notice && (
-          <div className="mt-4 bg-[#C9A84C]/8 border border-[#C9A84C]/20 rounded-xl px-4 py-3 text-xs text-[#C9A84C]">
+          <div className="mt-4 flex items-start gap-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 text-amber-400 text-xs animate-fade-in">
+            <AlertCircle size={13} className="flex-shrink-0 mt-0.5" />
             {notice}
           </div>
         )}
 
         {tracking && lastPos && (
-          <div className="mt-4 bg-[#111111] rounded-xl px-4 py-3 text-xs text-[#3A3632] text-center">
-            GPS · {lastPos.latitude.toFixed(4)}, {lastPos.longitude.toFixed(4)} · {locationPoints.length} pts
+          <div className="mt-4 glass-card border border-zinc-800 px-4 py-3 flex items-center gap-2">
+            <MapPin size={12} className="text-blue-400 flex-shrink-0" />
+            <span className="text-xs text-zinc-600 font-mono">
+              {lastPos.latitude.toFixed(4)}, {lastPos.longitude.toFixed(4)} · {locationPoints.length} pts
+            </span>
           </div>
         )}
       </div>
@@ -211,9 +237,7 @@ export default function TrackerPage() {
 }
 
 function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const R = 6371, dLat = ((lat2 - lat1) * Math.PI) / 180, dLon = ((lon2 - lon1) * Math.PI) / 180;
   const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
