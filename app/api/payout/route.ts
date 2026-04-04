@@ -2,36 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 import { getUserFromToken } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { fetchWeather, fetchAqi, getWeatherSeverity } from "@/lib/weather";
-import { checkTrigger, calculatePayout } from "@/lib/decision-engine";
+import { checkTrigger } from "@/lib/decision-engine";
+import { detectFraud, predictIncome } from "@/lib/ai";
+import { analyzePayout } from "@/lib/groq";
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   if (!token) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const user = await getUserFromToken(token);
-  if (!user) return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Invalid session" }, { status: 401 });
 
-  const policy = await query(
+  const policyRes = await query(
     "SELECT * FROM policies WHERE user_id = $1 AND status = 'active' ORDER BY created_at DESC LIMIT 1",
     [user.id]
   );
-  if (!policy.rows[0]) {
-    return NextResponse.json({ error: "No active policy" }, { status: 400 });
+  if (!policyRes.rows[0]) {
+    return NextResponse.json({ error: "No active policy found" }, { status: 400 });
   }
+  const pol = policyRes.rows[0];
 
-  const pol = policy.rows[0];
-
-  const activity = await query(
+  const activityRes = await query(
     "SELECT * FROM activities WHERE user_id = $1 AND date = CURRENT_DATE",
     [user.id]
   );
-  const todayActivity = activity.rows[0] ?? { active_hours: 0, distance: 0, location_variance: 0 };
+  const activity = activityRes.rows[0] ?? { active_hours: 0, distance: 0, location_variance: 0 };
 
-  const incomeHistory = await query(
+  const incomeRes = await query(
     "SELECT amount FROM income_history WHERE user_id = $1 ORDER BY date DESC LIMIT 7",
     [user.id]
   );
-  const past_income = incomeHistory.rows.map((r: { amount: number }) => Number(r.amount));
+  const past_income = incomeRes.rows.map((r: { amount: number }) => Number(r.amount));
 
   const [weather, aqiData] = await Promise.all([
     fetchWeather(user.city),
@@ -43,32 +44,54 @@ export async function POST(req: NextRequest) {
   if (!trigger.triggered) {
     return NextResponse.json({
       eligible: false,
-      reason: "No adverse conditions detected today",
+      reason: "No adverse weather or air-quality conditions detected today",
       weather,
       aqi: aqiData.aqi,
     });
   }
 
-  const severity = getWeatherSeverity(weather.rainfall, weather.temperature, aqiData.aqi);
+  const severity   = getWeatherSeverity(weather.rainfall, weather.temperature, aqiData.aqi);
+  const active_hours       = Number(activity.active_hours);
+  const distance           = Number(activity.distance);
+  const location_variance  = Number(activity.location_variance);
+  const deductible         = Number(pol.deductible);
+  const payout_cap         = Number(pol.payout_cap);
 
-  const result = calculatePayout({
+  const expected_income = predictIncome({
     past_income,
     weather_severity: severity,
     working_hours: Number(user.working_hours),
-    active_hours: Number(todayActivity.active_hours),
-    distance: Number(todayActivity.distance),
-    location_variance: Number(todayActivity.location_variance),
-    deductible: Number(pol.deductible),
-    payout_cap: Number(pol.payout_cap),
   });
 
+  // Estimate actual earnings from tracked activity
+  const actual_income = Math.round(active_hours * 65 + distance * 4);
+  const loss = Math.max(expected_income - actual_income, 0);
+
+  const income_pattern = expected_income > 0 ? actual_income / expected_income : 1;
+  const { fraud_score } = detectFraud({ active_hours, distance, location_variance, income_pattern });
+
+  // ── Groq AI payout decision ──────────────────────────────────────────────
+  const decision = await analyzePayout({
+    expected_income,
+    actual_income,
+    loss,
+    active_hours,
+    distance,
+    location_variance,
+    weather,
+    aqi: aqiData.aqi,
+    trigger_reasons: trigger.reasons,
+    deductible,
+    payout_cap,
+    fraud_score,
+  });
+
+  // Persist result
   await query(
     `INSERT INTO payouts (user_id, expected_income, actual_income, loss, payout, status, rejection_reason, fraud_score)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-    [
-      user.id, result.expected_income, result.actual_income, result.loss,
-      result.payout, result.status, result.rejection_reason ?? null, result.fraud_score ?? null,
-    ]
+    [user.id, expected_income, actual_income, loss,
+     decision.payout, decision.status, decision.rejection_reason ?? null, fraud_score]
   );
 
   await query(
@@ -80,8 +103,16 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     eligible: true,
     trigger,
-    ...result,
     weather,
     aqi: aqiData.aqi,
+    expected_income,
+    actual_income,
+    loss,
+    payout: decision.payout,
+    status: decision.status,
+    rejection_reason: decision.rejection_reason,
+    reasoning: decision.reasoning,
+    confidence: decision.confidence,
+    fraud_score,
   });
 }

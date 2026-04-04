@@ -1,70 +1,82 @@
 # Zensure — AI-Powered Income Protection Platform
 
 ## Overview
-Zensure is a full-stack parametric insurance platform for quick-commerce delivery workers (Zepto, Blinkit, Instamart). It automatically monitors weather, AQI, and user activity to detect adverse conditions and trigger income payouts — no manual claims.
+Zensure is a full-stack parametric insurance platform for quick-commerce delivery workers (Zepto, Blinkit, Instamart). It automatically monitors weather, AQI, and user activity to detect adverse conditions and trigger AI-powered income payouts — no manual claims, no forms.
 
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router, TypeScript)
-- **Styling**: Tailwind CSS v4 — Vanta black (#0A0A0A) / Burgundy (#7B1A2A) / Gold (#C9A84C), rounded-2xl/3xl cards, glass-morphism nav, gradient buttons (rounded-full), ambient radial glows
-- **Database**: PostgreSQL (Replit built-in via `pg`)
-- **Auth**: JWT (httpOnly cookies) + bcrypt
-- **Payments**: Razorpay (subscription + mock payouts)
+- **Styling**: Tailwind CSS v4 — Vanta black (#0A0A0A) / Burgundy (#7B1A2A) / Gold (#C9A84C), rounded-2xl/3xl cards, glass-morphism nav, gradient buttons, ambient radial glows
+- **Database**: PostgreSQL via `pg` (Supabase-hosted, portable to any Postgres)
+- **Auth**: Custom JWT (httpOnly cookies) + bcrypt — stateless, no session server
+- **AI**: Groq `llama-3.1-8b-instant` for risk scoring + payout decisions (deterministic fallback)
+- **Payments**: Razorpay (test mode; swap key prefix for production)
 - **Weather**: OpenWeatherMap API
-- **AQI**: WAQI API
-- **AI Models**: In-process ML scoring (no external AI API needed)
+- **AQI**: WAQI API (aqicn.org)
 
 ## Architecture
 ```
 Next.js App Router
-├── app/              — Frontend pages
-├── app/api/          — API routes (backend)
-├── lib/              — Shared logic
-│   ├── ai.ts         — Risk prediction, income prediction, fraud detection
-│   ├── decision-engine.ts — Core payout logic (rule-based)
-│   ├── weather.ts    — OpenWeatherMap + WAQI integration
-│   ├── db.ts         — PostgreSQL connection pool
-│   └── auth.ts       — JWT + bcrypt utilities
-└── middleware.ts     — Route protection
+├── app/                  — Frontend pages
+├── app/api/              — API routes (backend)
+│   ├── auth/             — register, login, logout, me
+│   ├── ai/analyze/       — Groq AI unified endpoint
+│   ├── dashboard/        — Full dashboard data
+│   ├── activity/         — GPS shift tracking
+│   ├── payout/           — Groq payout analysis
+│   ├── simulate/         — Scenario simulator
+│   ├── payment/          — Razorpay order creation
+│   └── init-db/          — DB table initialization
+├── lib/
+│   ├── groq.ts           — Groq AI client (risk + payout analysis)
+│   ├── ai.ts             — Deterministic fallback models
+│   ├── decision-engine.ts — Core trigger + payout logic
+│   ├── weather.ts        — OpenWeatherMap + WAQI integration
+│   ├── db.ts             — PostgreSQL singleton pool
+│   └── auth.ts           — JWT + bcrypt utilities
+├── utils/supabase/       — Supabase client helpers (server, client, middleware)
+├── schema.sql            — Full database schema (run in Supabase SQL Editor)
+├── .env.example          — All required env vars documented
+├── DEPLOY.md             — Manual deployment guide
+└── middleware.ts         — Route protection (JWT cookie check)
 ```
 
-## Key Features
-- **AI Risk Scoring** — RandomForest-style weighted model sets premium
-- **AI Income Prediction** — Weighted moving average with weather adjustment
-- **Fraud Detection** — IsolationForest-style anomaly scoring
-- **Rule-Based Decision Engine** — Trigger → Activity → Fraud → Payout
-- **Real-Time Weather** — Live data from OpenWeatherMap + WAQI
-- **Activity Tracker** — GPS + timer, stores to DB
-- **Razorpay Integration** — Premium payment + order creation
-- **Simulation Mode** — Random scenario generator for testing
+## AI Pipeline
+1. **Registration**: Groq analyzes city risk, income, hours → sets risk_score, premium, coverage
+2. **Payout**: Groq cross-checks weather triggers, fraud score, activity data → approved/rejected + reasoning
+3. **Fallback**: If Groq API unavailable, deterministic weighted models activate automatically
 
 ## Database Tables
 - `users` — Profile + credentials
-- `policies` — Coverage, premium, deductible, payout cap
+- `policies` — AI-scored coverage, premium, deductible, payout cap
 - `activities` — Daily hours, distance, GPS points
-- `income_history` — 7-day income for prediction baseline
-- `triggers` — Weather/AQI events logged
-- `payouts` — Payout decisions with audit trail
+- `income_history` — 7-day seed data for income prediction
+- `triggers` — Weather/AQI events logged per trigger
+- `payouts` — Full audit trail with fraud scores and AI reasoning
 
-## Environment Secrets Required
-- `WEATHER_API_KEY` — OpenWeatherMap API key
-- `AQI_API_KEY` — WAQI API token
-- `RAZORPAY_KEY_ID` — Razorpay key ID
-- `RAZORPAY_KEY_SECRET` — Razorpay secret
-- `SUPABASE_URL` — Optional future Supabase migration
-- `SUPABASE_ANON_KEY` — Optional future Supabase migration
-- `SESSION_SECRET` — JWT signing secret (auto-set)
-- `DATABASE_URL` — Replit PostgreSQL (auto-managed)
+## Environment Variables Required
+| Secret | Source |
+|--------|--------|
+| `DATABASE_URL` | Supabase → Settings → Database → Connection string (Transaction pooler port 6543) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Settings → API → Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Settings → API → anon public key |
+| `SESSION_SECRET` | `openssl rand -hex 32` |
+| `GROQ_API_KEY` | console.groq.com → API Keys |
+| `WEATHER_API_KEY` | openweathermap.org |
+| `AQI_API_KEY` | aqicn.org/data-platform/token |
+| `RAZORPAY_KEY_ID` | Razorpay dashboard |
+| `RAZORPAY_KEY_SECRET` | Razorpay dashboard |
 
 ## Running
-```
-npm run dev   # port 5000
-npm run build
-npm run start # port 5000
+```bash
+npm run dev    # development — port 5000
+npm run build  # production build
+npm start      # production — port 5000
 ```
 
-## Deployment Notes
-- All secrets are in Replit Secrets (portable to any env via env vars)
-- Database uses standard PostgreSQL — portable to any Postgres provider
-- No vendor lock-in: swap DATABASE_URL to migrate to Supabase/Neon/Railway
-- JWT auth is stateless — no session server needed
-- Razorpay keys work in any environment
+## Deployment (portable — no vendor lock-in)
+See `DEPLOY.md` for full step-by-step instructions covering:
+- Supabase database setup via `schema.sql`
+- Vercel, Railway, Render, Fly.io deployment
+- Environment variable configuration
+
+The only file needed is `.env.local` — swap `DATABASE_URL` to change the Postgres provider.
